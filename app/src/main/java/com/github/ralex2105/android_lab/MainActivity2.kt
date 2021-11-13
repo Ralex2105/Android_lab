@@ -1,16 +1,12 @@
 package com.github.ralex2105.android_lab
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity2 : AppCompatActivity() {
     var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
-    private lateinit var sharedPref: SharedPreferences
-
 
     companion object {
         const val SEC = "sec"
@@ -23,24 +19,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         textSecondsElapsed = findViewById(R.id.textSecondsElapsed)
-        sharedPref = getSharedPreferences("SEC", Context.MODE_PRIVATE)
         backgroundThread.start()
     }
 
-    override fun onStart() {
-        secondsElapsed = sharedPref.getInt("SEC", 0)
-        super.onStart()
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(SEC, secondsElapsed)
+        super.onSaveInstanceState(outState)
     }
-
-    override fun onStop() {
-        super.onStop()
-        val sharedPref = sharedPref.edit()
-        sharedPref.putInt("SEC", secondsElapsed)
-        sharedPref.apply()
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        secondsElapsed = savedInstanceState.getInt(SEC)
+        super.onRestoreInstanceState(savedInstanceState)
     }
 }
